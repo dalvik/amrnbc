@@ -56,7 +56,7 @@ JNIEXPORT jint JNICALL Java_com_iped_ipcam_gui_UdtTools_amrDecoder(JNIEnv *env, 
 	     
 	  Word16 reset_flag = 0;
 	  Word16 reset_flag_old = 1;
-	  int i;
+	  Word16 i;
 	  int x;
 	  
 	  UWord8 toc, q, ft;
@@ -75,6 +75,7 @@ JNIEXPORT jint JNICALL Java_com_iped_ipcam_gui_UdtTools_amrDecoder(JNIEnv *env, 
 	  (*env)->ReleaseByteArrayElements(env, dst, desData, 0); 
 	  psrc=(UWord8*)srcData;
 	  pdst=(Word16*)desData;
+//LOGI("des data length %d",(*env)->GetArrayLength(env,dst));
 	  //pthread_mutex_lock(&amr_decode_lock);
 	  while (src_size>0/*fread (&toc, sizeof(UWord8), 1, file_serial) == 1*/)
 	  {
@@ -82,6 +83,7 @@ JNIEXPORT jint JNICALL Java_com_iped_ipcam_gui_UdtTools_amrDecoder(JNIEnv *env, 
 		  toc=*psrc;
 		  psrc++;
 		  src_size--;
+//LOGI("toc = %02x",toc);
 		  q  = (toc >> 2) & 0x01;
 		  ft = (toc >> 3) & 0x0F;
 		  if(src_size<sizeof(UWord8)*packed_size[ft]) {
@@ -93,12 +95,12 @@ JNIEXPORT jint JNICALL Java_com_iped_ipcam_gui_UdtTools_amrDecoder(JNIEnv *env, 
 		  /*fread (packed_bits, sizeof(UWord8), packed_size[ft], file_serial);*/
 
 		  rx_type = UnpackBits(q, ft, packed_bits, &mode, &serial[1]);
-		    
+/*		    
 		  ++frame;
 		  if ( (frame%50) == 0) {
 			fprintf (stderr, "\rframe=%d  ", frame);
 		  }
-
+*/
 	          if (rx_type == RX_NO_DATA) {
 	            mode = speech_decoder_state->prev_mode;
 	          } else {
@@ -128,8 +130,7 @@ JNIEXPORT jint JNICALL Java_com_iped_ipcam_gui_UdtTools_amrDecoder(JNIEnv *env, 
 		 	/* write synthesized speech to file */
 			 for(x=0;x<L_FRAME;x++){
 			 	for(i=0;i<channels;i++){
-//LOGI("pdst[i] = %d  i = %d, synth[x]= %d, x= %d",pdst[i],i,synth[x], x);
-			 		pdst[i]=synth[x];
+  			 		pdst[i]=synth[x];
 			 	}
 				pdst+=channels;
 			 }
