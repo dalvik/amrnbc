@@ -147,3 +147,29 @@ LOCAL_PRELINK_MODULE := false
 
 include $(BUILD_SHARED_LIBRARY)
 
+
+#************encode amr*************
+
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES:= \
+		encode_pcm/pcm_to_amr.c
+
+LOCAL_LDFLAGS :=  encode_pcm/AMR_NB_ENC.a
+
+LOCAL_LDLIBS += -L$(SYSROOT)/usr/lib -lm -llog
+
+LOCAL_MODULE_TAGS := pcm
+
+# This is the target being built.
+LOCAL_MODULE:= libpcm
+
+# Also need the JNI headers.
+LOCAL_C_INCLUDES += \
+	$(JNI_H_INCLUDE)
+
+LOCAL_PRELINK_MODULE := false
+
+include $(BUILD_SHARED_LIBRARY)
+
